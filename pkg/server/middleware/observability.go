@@ -77,8 +77,7 @@ func (o *ObservabilityMgr) BuildEPChain(ctx context.Context, entryPointName stri
 		metricsHandler := mmetrics.WrapEntryPointHandler(ctx, o.metricsRegistry, entryPointName)
 
 		if o.tracer != nil && o.ShouldAddTracing(resourceName, observabilityConfig) {
-			//remove metrics from the chain
-			// chain = chain.Append(observability.WrapMiddleware(ctx, metricsHandler))
+			chain = chain.Append(observability.WrapMiddleware(ctx, metricsHandler))
 		} else {
 			chain = chain.Append(metricsHandler)
 		}

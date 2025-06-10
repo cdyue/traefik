@@ -30,6 +30,10 @@ func WrapMiddleware(ctx context.Context, constructor alice.Constructor) alice.Co
 
 		if traceableHandler, ok := handler.(Traceable); ok {
 			name, typeName, spanKind := traceableHandler.GetTracingInformation()
+			//filter some spans
+			if typeName == "EntryPoint" || typeName == "Metrics" || typeName == "Compress" {
+				return handler, nil
+			}
 			log.Ctx(ctx).Debug().Str(logs.MiddlewareName, name).Msg("Adding tracing to middleware")
 			return NewMiddleware(handler, name, typeName, spanKind), nil
 		}
