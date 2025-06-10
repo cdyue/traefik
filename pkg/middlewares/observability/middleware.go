@@ -31,7 +31,7 @@ func WrapMiddleware(ctx context.Context, constructor alice.Constructor) alice.Co
 		if traceableHandler, ok := handler.(Traceable); ok {
 			name, typeName, spanKind := traceableHandler.GetTracingInformation()
 			//filter some spans
-			if typeName != "Router" && typeName != "AuthRequest" && typeName != "ReverseProxy" {
+			if typeName == "Metrics" {
 				return handler, nil
 			}
 			log.Ctx(ctx).Debug().Str(logs.MiddlewareName, name).Msg("Adding tracing to middleware")
