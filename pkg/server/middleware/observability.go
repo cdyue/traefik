@@ -57,9 +57,9 @@ func (o *ObservabilityMgr) BuildEPChain(ctx context.Context, entryPointName stri
 
 	// As the Entry point observability middleware ensures that the tracing is added to the request and logger context,
 	// it needs to be added before the access log middleware to ensure that the trace ID is logged.
-	if o.tracer != nil && o.ShouldAddTracing(resourceName, observabilityConfig) {
-		chain = chain.Append(observability.EntryPointHandler(ctx, o.tracer, entryPointName))
-	}
+	// if o.tracer != nil && o.ShouldAddTracing(resourceName, observabilityConfig) {
+	// 	chain = chain.Append(observability.EntryPointHandler(ctx, o.tracer, entryPointName))
+	// }
 
 	if o.accessLoggerMiddleware != nil && o.ShouldAddAccessLogs(resourceName, observabilityConfig) {
 		chain = chain.Append(accesslog.WrapHandler(o.accessLoggerMiddleware))
@@ -77,7 +77,8 @@ func (o *ObservabilityMgr) BuildEPChain(ctx context.Context, entryPointName stri
 		metricsHandler := mmetrics.WrapEntryPointHandler(ctx, o.metricsRegistry, entryPointName)
 
 		if o.tracer != nil && o.ShouldAddTracing(resourceName, observabilityConfig) {
-			chain = chain.Append(observability.WrapMiddleware(ctx, metricsHandler))
+			//remove metrics from the chain
+			// chain = chain.Append(observability.WrapMiddleware(ctx, metricsHandler))
 		} else {
 			chain = chain.Append(metricsHandler)
 		}
